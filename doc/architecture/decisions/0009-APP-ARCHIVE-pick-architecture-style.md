@@ -1,21 +1,27 @@
-# 9. APP-archive-pick-architecture-style
+# 9. APP ARCHIVE - Architecture style
 
 Date: 2020-04-26
 
 ## Status
 
-Accepted
+Proposed
 
 ## Context
+This is for sure supportive domain. 
 
-The issue motivating this decision, and any context that influences or constrains the decision.
+This is rather shallow complexity here so no need to treat it very special.
 
+The type complexity is related to persistence and archive daily documents
+and provide some read model for forecasting domains. It means that 
+this model would adapter - port implementation for relevant modules.    
+
+The direction of changes here would be related to adding some feature
+related to dev ops and high availability in time of populating data 
+for forecasting.
 ## Decision
-
-The change that we're proposing or have agreed to implement.
+We propose **3 layer architecture** style for this module.
 
 ## Consequences
-
-What becomes easier or more difficult to do and any risks introduced by the change that will need to be mitigated.
-
-## Other options
+1. Very well know architecture style with easy to implement.
+2. Dedicated for not complex domain like that.
+3. Good separation of layers.
