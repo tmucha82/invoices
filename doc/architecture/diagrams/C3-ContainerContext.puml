@@ -90,7 +90,7 @@ package "Invoice System" as 123 {
 3 .[#707070].> 201 : <<Api>>\nSend\ndoc. to
 201 .[#707070].> 202 : <<Queue>>\nSend raw documents to
 202 .[#707070].> 201 : <<Queue>>\nSend CMD documents to
-201 .[#707070].> 203 : <<Queue>>\nSend CMD documents to
+201 .[#707070].> 203 : <<JDBC>>\nSend CMD documents to
 202 .[#707070].> 204 : <<Queue>>\nSend CMD documents to
 204 .[#707070].> 201 : <<Queue>>\nNotify about status\nof verification
 201 .[#707070].> 1 : <<Email>>\nWrong\ndocument
