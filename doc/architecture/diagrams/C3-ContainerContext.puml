@@ -1,0 +1,106 @@
+@startuml(id=Components)
+scale max 2000x1409
+title Invoice System - Invoice Publishing Application - Containers
+caption Containers diagrams of Invoice Publishing Application
+
+skinparam {
+  shadowing false
+  arrowColor #707070
+  actorBorderColor #707070
+  componentBorderColor #707070
+  rectangleBorderColor #707070
+  noteBackgroundColor #ffffff
+  noteBorderColor #707070
+}
+actor "Sole" <<Person>> as 1 #08427b
+note left of 1
+    Sole proprietorship
+end note
+actor "Tax Office" <<Person>> as 2 #08427b
+actor "POS" <<Person>> as 3 #08427b
+note right of 3
+    Some point of sales
+end note
+
+rectangle 301 <<Software System>> #999999 [
+  Ministry of Finance
+  --
+  External system we send financial
+  documents to.
+]
+
+package "Invoice System" as 123 {
+  component 201 <<Spring Boot>> #85bbf0 [
+    Public Api
+    --
+    This is like Frontend for every
+    external system that will publish
+    documents to our invoice system.
+  ]
+  component 202 <<Spring Boot>> #85bbf0 [
+    OCR
+    --
+    This is component responsible for
+    parsing documents so it could be
+    used for other processing
+  ]
+  database 203 <<Store>> #85bbf0 [
+    Document Storage
+    --
+    Database that stores all incoming
+    raw documents and all parsed
+    to CMD documents.
+  ]
+  component 204 <<Spring Boot>> #85bbf0 [
+    Verifier
+    --
+    This is component responsible for
+    verifying if documents are
+    correct in terms of some business
+    rules.
+  ]
+  component 205 <<Spring Boot>> #85bbf0 [
+    Archive
+    --
+    Responsible for receiving verified
+    documents to database and show them
+    for rule engine.
+  ]
+  database 206 <<Store>> #85bbf0 [
+    Archive Storage
+    --
+    Stores verified documents.
+  ]
+  component 207 <<Spring Boot>> #85bbf0 [
+    Vat Tax Forecast
+    --
+    Component for forecasting
+    Vat tax trend
+  ]
+  component 208 <<Spring Boot>> #85bbf0 [
+    Income Tax Forecast
+    --
+    Component for forecasting
+    Invoice tax trend
+  ]
+}
+
+1 .[#707070].> 201 : <<Email>>\nSend\ndoc. to
+2 .[#707070].> 201 : <<Api>>\nSend\ndoc. to
+3 .[#707070].> 201 : <<Api>>\nSend\ndoc. to
+201 .[#707070].> 202 : <<Queue>>\nSend raw documents to
+202 .[#707070].> 201 : <<Queue>>\nSend CMD documents to
+201 .[#707070].> 203 : <<Queue>>\nSend CMD documents to
+202 .[#707070].> 204 : <<Queue>>\nSend CMD documents to
+204 .[#707070].> 201 : <<Queue>>\nNotify about status\nof verification
+201 .[#707070].> 1 : <<Email>>\nWrong\ndocument
+201 .[#707070].> 2 : <<Email>>\nWrong\ndocument
+201 .[#707070].> 3 : <<Email>>\nWrong\ndocument
+204 .[#707070].> 205 : <<Queue>>\nSend verified\ndocuments to
+205 .[#707070].> 206 : <<Query>>\nStore&Query documents using
+207 .[#707070].> 205 : <<Query>>\nDaily query of\nrelevant doc
+208 .[#707070].> 205 : <<Query>>\nDaily query of\nrelevant doc
+207 .[#707070].> 301 : <<SOAP>>\nSend forecast to
+208 .[#707070].> 301 : <<SOAP>>\nSend forecast to
+
+@enduml
