@@ -1,6 +1,4 @@
 package com.infotarget.dna.gratis.domain;
 
-public class Something {
-
-
+public class Gratis {
 }
