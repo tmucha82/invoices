@@ -15,14 +15,16 @@ public class Purchase {
     private final PurchaseId purchaseId;
     private final List<Product> ordered;
     private final List<Product> freeProducts;
+    private final List<Product> removedOnDemand;
 
     private Purchase(PurchaseId purchaseId) {
         this.purchaseId = purchaseId;
         ordered = new ArrayList<>();
         freeProducts = new ArrayList<>();
+        removedOnDemand = new ArrayList<>();
     }
 
-    Result addProduct(Product product, GratisPolicy gratisPolicy) {
+    public Result addProduct(Product product, GratisPolicy gratisPolicy) {
         if (alreadyOrdered(product)) {
             return Result.failure("Cannot add product");
         }
@@ -34,7 +36,7 @@ public class Purchase {
         return Result.success(createAddedEvents(product, extraProducts));
     }
 
-    Result removeProduct(Product product, GratisPolicy gratisPolicy) {
+    public Result removeProduct(Product product, GratisPolicy gratisPolicy) {
         if (notOrderedYet(product)) {
             return Result.failure("Cannot remove product");
         }
@@ -47,21 +49,24 @@ public class Purchase {
                             .orElse(Product.productOfType(gratisType));
                     freeProducts.remove(productToRemove);
                 });
-        return Result.success();
+        return Result.success();//TODO
     }
 
-    Result addGratisAgain(Product product) {
-        //TODO
-        freeProducts.remove(product);
-
-
-        return Result.success();
+    public Result addGratisAgain(Product product) {
+        if (wasRemovedOnDemand(product)) {
+            freeProducts.add(product);
+            return Result.success();//TODO
+        }
+        return Result.failure("Cannot add gratis again since it was not removed");
     }
 
-    Result removeGratis(Product product) {
-        //TODO
-        freeProducts.remove(product);
-        return Result.success();
+    public Result removeGratis(Product product) {
+        if (freeProducts.contains(product)) {
+            freeProducts.remove(product);
+            removedOnDemand.add(product);
+            return Result.success();//TODO
+        }
+        return Result.failure("Cannot remove gratis that was not added");
     }
 
     public PurchaseId id() {
@@ -84,6 +89,10 @@ public class Purchase {
                 .collect(Collectors.toList());
         result.add(new RegularProductAdded(purchaseId, regularProduct.getSerialNumber()));
         return result;
+    }
+
+    private boolean wasRemovedOnDemand(Product product) {
+        return removedOnDemand.contains(product);
     }
 
     private boolean alreadyOrdered(Product product) {
