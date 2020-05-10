@@ -2,10 +2,20 @@ package com.infotarget.dna.shared;
 
 import io.vavr.control.Either;
 
+import java.util.List;
+
 public class Result {
 
     public static Result success() {
-        return new Result(Either.right(new Success()));
+        return success(List.of());
+    }
+
+    public static Result success(DomainEvent event) {
+        return success(List.of(event));
+    }
+
+    public static Result success(List<DomainEvent> events) {
+        return new Result(Either.right(new Success(events)));
     }
 
     private final Either<Failure, Success> result;
@@ -31,5 +41,11 @@ public class Result {
             return result.getLeft().getReason();
         }
         return "OK";
+    }
+
+    public List<DomainEvent> events() {
+        return result
+                .map(Success::getEvents)
+                .getOrElse(List.of());
     }
 }

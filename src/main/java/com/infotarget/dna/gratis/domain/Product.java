@@ -4,15 +4,18 @@ import java.util.Objects;
 
 public class Product {
 
+    public static Product of(SerialNumber serialNumber, ProductType productType) {
+        return new Product(serialNumber, productType);
+    }
     public static Product productOfType(ProductType productType) {
-        return new Product(productType);
+        return of(SerialNumber.newOne(), productType);
     }
 
     private final SerialNumber serialNumber;
     private final ProductType productType;
 
-    private Product(ProductType productType) {
-        this.serialNumber = SerialNumber.newOne();
+    private Product(SerialNumber serialNumber, ProductType productType) {
+        this.serialNumber = serialNumber;
         this.productType = productType;
     }
 

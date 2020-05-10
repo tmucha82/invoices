@@ -41,4 +41,21 @@ class ResultSpec extends Specification {
             result.isSuccessful()
             result.reason() == "OK"
     }
+
+    def 'Success with domain events should return them'() {
+        given:
+            List<DomainEvent> events = List.of(DomainEventFixture.randomEvent())
+            Result success = Result.success(events)
+        expect:
+            success.isSuccessful()
+            success.events() == events
+    }
+
+    def 'Failure should not return any events'() {
+        given:
+            Result success = Result.failure("Of any reason")
+        expect:
+            success.isFailure()
+            success.events().isEmpty()
+    }
 }
