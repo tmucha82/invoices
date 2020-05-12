@@ -5,7 +5,7 @@ import com.infotarget.dna.shared.DomainEvent;
 import java.util.Objects;
 import java.util.UUID;
 
-public class GratisProductAdded implements DomainEvent {
+public class GratisProductAdded implements ProductEvent {
     private final UUID eventId;
     private final PurchaseId purchaseId;
     private final SerialNumber serialNumber;
@@ -21,8 +21,9 @@ public class GratisProductAdded implements DomainEvent {
         return eventId;
     }
 
-    public SerialNumber getSerialNumber() {
-        return serialNumber;
+    @Override
+    public UUID productId() {
+        return serialNumber.id();
     }
 
     @Override

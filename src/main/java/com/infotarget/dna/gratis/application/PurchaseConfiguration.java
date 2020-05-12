@@ -7,19 +7,14 @@ import com.infotarget.dna.gratis.infrastructure.InMemoryPurchaseRepository;
 import com.infotarget.dna.shared.DomainEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 
 @Configuration
+@Import(DomainEventPublisherConfiguration.class)
 public class PurchaseConfiguration {
-
 
     private static ProductType SUBSCRIPTION = ProductType.newProductType();
     private static ProductType DDD_BOOK = ProductType.newProductType();
-
-    @Bean
-    DomainEventPublisher domainEventPublisher() {
-        return event -> {
-        };
-    }
 
     @Bean
     GratisPolicy defaultGratisPolicy() {

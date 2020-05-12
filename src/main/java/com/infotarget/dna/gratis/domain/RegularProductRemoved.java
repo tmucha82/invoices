@@ -1,22 +1,18 @@
 package com.infotarget.dna.gratis.domain;
 
+
 import java.util.Objects;
 import java.util.UUID;
 
-public class RegularProductAdded implements ProductEvent {
+public class RegularProductRemoved implements ProductEvent {
     private final UUID eventId;
     private final PurchaseId purchaseId;
     private final SerialNumber serialNumber;
 
-    RegularProductAdded(PurchaseId purchaseId, SerialNumber serialNumber) {
+    RegularProductRemoved(PurchaseId purchaseId, SerialNumber serialNumber) {
         this.eventId = UUID.randomUUID();
-        this.purchaseId = purchaseId;
         this.serialNumber = serialNumber;
-    }
-
-    @Override
-    public UUID eventId() {
-        return eventId;
+        this.purchaseId = purchaseId;
     }
 
     @Override
@@ -25,10 +21,15 @@ public class RegularProductAdded implements ProductEvent {
     }
 
     @Override
+    public UUID eventId() {
+        return eventId;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        RegularProductAdded that = (RegularProductAdded) o;
+        RegularProductRemoved that = (RegularProductRemoved) o;
         return Objects.equals(eventId, that.eventId) &&
                 Objects.equals(purchaseId, that.purchaseId) &&
                 Objects.equals(serialNumber, that.serialNumber);
@@ -36,7 +37,7 @@ public class RegularProductAdded implements ProductEvent {
 
     @Override
     public String toString() {
-        return "RegularProductAdded{" +
+        return "RegularProductRemoved{" +
                 "eventId=" + eventId +
                 ", purchaseId=" + purchaseId +
                 ", serialNumber=" + serialNumber +

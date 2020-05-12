@@ -147,6 +147,6 @@ class PurchaseSpec extends Specification {
                 .filter(p -> aClass == p.getClass())
                 .map(ev -> (GratisProductAdded) ev)
                 .findFirst().orElseThrow(IllegalStateException::new)
-        Product.of(gratisEvent.getSerialNumber(), gratisType)
+        Product.of(SerialNumber.of(gratisEvent.productId()), gratisType)
     }
 }

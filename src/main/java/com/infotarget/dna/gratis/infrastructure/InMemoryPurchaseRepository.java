@@ -19,7 +19,8 @@ public class InMemoryPurchaseRepository implements PurchaseRepository {
 
     @Override
     public Purchase update(Purchase purchase) {
-        return repository.put(purchase.id(), purchase);
+        repository.put(purchase.id(), purchase);
+        return purchase;
     }
 
     @Override

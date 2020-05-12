@@ -5,13 +5,21 @@ import java.util.UUID;
 
 public class SerialNumber {
     static SerialNumber newOne() {
-        return new SerialNumber(UUID.randomUUID());
+        return of(UUID.randomUUID());
+    }
+
+    public static SerialNumber of(UUID uuid) {
+        return new SerialNumber(uuid);
     }
 
     private final UUID uuid;
 
     private SerialNumber(UUID uuid) {
         this.uuid = uuid;
+    }
+
+    public UUID id() {
+        return uuid;
     }
 
     @Override

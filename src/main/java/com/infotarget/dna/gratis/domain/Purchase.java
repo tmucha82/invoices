@@ -41,6 +41,7 @@ public class Purchase {
             return Result.failure("Cannot remove product");
         }
         ordered.remove(product);
+        List<Product> removedProducts = new ArrayList<>();
         gratisPolicy.gratisProducts(this, product)
                 .forEach(gratisType -> {
                     Product productToRemove = freeProducts.stream()
@@ -48,14 +49,15 @@ public class Purchase {
                             .findFirst()
                             .orElse(Product.productOfType(gratisType));
                     freeProducts.remove(productToRemove);
+                    removedProducts.add(productToRemove);
                 });
-        return Result.success();//TODO
+        return Result.success(createRemovedEvents(product, removedProducts));
     }
 
     public Result addGratisAgain(Product product) {
         if (wasRemovedOnDemand(product)) {
             freeProducts.add(product);
-            return Result.success();//TODO
+            return Result.success(createAddedGratisEvents( List.of(product)));
         }
         return Result.failure("Cannot add gratis again since it was not removed");
     }
@@ -64,7 +66,7 @@ public class Purchase {
         if (freeProducts.contains(product)) {
             freeProducts.remove(product);
             removedOnDemand.add(product);
-            return Result.success();//TODO
+            return Result.success(createRemovedGratisEvents(List.of(product)));
         }
         return Result.failure("Cannot remove gratis that was not added");
     }
@@ -83,11 +85,27 @@ public class Purchase {
                                 .groupingBy(Product::getProductType, Collectors.counting())));
     }
 
-    private List<DomainEvent> createAddedEvents(Product regularProduct, List<Product> extraProducts) {
-        List<DomainEvent> result = extraProducts.stream()
+    private List<DomainEvent> createRemovedGratisEvents(List<Product> extraProducts) {
+        return extraProducts.stream()
+                .map(gratis -> new GratisProductRemoved(purchaseId, gratis.getSerialNumber()))
+                .collect(Collectors.toList());
+    }
+
+    private List<DomainEvent> createAddedGratisEvents(List<Product> extraProducts) {
+        return extraProducts.stream()
                 .map(gratis -> new GratisProductAdded(purchaseId, gratis.getSerialNumber()))
                 .collect(Collectors.toList());
+    }
+
+    private List<DomainEvent> createAddedEvents(Product regularProduct, List<Product> extraProducts) {
+        List<DomainEvent> result = createAddedGratisEvents(extraProducts);
         result.add(new RegularProductAdded(purchaseId, regularProduct.getSerialNumber()));
+        return result;
+    }
+
+    private List<DomainEvent> createRemovedEvents(Product regularProduct, List<Product> extraProducts) {
+        List<DomainEvent> result = createRemovedGratisEvents(extraProducts);
+        result.add(new RegularProductRemoved(purchaseId, regularProduct.getSerialNumber()));
         return result;
     }
 
